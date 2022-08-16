@@ -22,19 +22,37 @@ from rest_framework_simplejwt.views import (
     TokenObtainPairView,
     TokenRefreshView
 )
+from rest_framework_swagger.views import get_swagger_view
+
+from rest_framework.schemas import get_schema_view
 
 from django.conf import settings
+from django.views.generic import TemplateView
+# from django.conf.urls import url
 from contact.views import ContactViewSet
 
 router = DefaultRouter()
 router.register(r'contact', ContactViewSet, basename='contact')
 
+# Swagger
+schema_view = get_swagger_view(title='Enterprise API')
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # path('contact/', include('contact.urls')),
+    path('contact/', include('contact.urls'), name='contact'),
     path('token/', TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path('token/refresh/', TokenRefreshView.as_view(), name="token_refresh"),
     path('', include(router.urls)),
+    path('api_schema/', get_schema_view(
+        title='API Schema',
+        description='Guide for REST API',
+    ), name='api_schema'),
+    path('swagger-ui/', TemplateView.as_view(
+        template_name='docs.html',
+        extra_context={'schema_url':'api_schema'}
+    ), name='swagger-ui'),
+
+    # path('#/', schema_view),
 ]
 
 DEFAULTS = {

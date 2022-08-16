@@ -5,6 +5,7 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Contact
 from .services import contact
 from .serializers import ContactSerializer
+
 # Create your views here.
 def get_contacts(request):
     return contact.get_contacts(request)
